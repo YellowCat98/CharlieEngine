@@ -10,6 +10,13 @@ CPMAddPackage(
     GIT_TAG main  # or specify a specific tag or branch if needed
 )
 
+# Ensure the package is correctly fetched
+if (tuliphook_ADDED)
+    message(STATUS "TulipHook successfully added")
+else()
+    message(FATAL_ERROR "Failed to add TulipHook")
+endif()
+
 # Define the source files
 set(SOURCES
     main.mm
@@ -37,13 +44,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(CharlieEngineInject
         "-framework UIKit"
         "-framework Foundation"
-    )
-
-    target_link_libraries(CharlieEngineInject
         tuliphook
     )
+
+    # Include directories for TulipHook
     target_include_directories(CharlieEngineInject PRIVATE
-        ${tuliphook_SOURCE_DIR}/include/tulip
-        ${tuliphook_SOURCE_DIR}/include/tulip/platform
+        ${tuliphook_SOURCE_DIR}/include
     )
 endif()
