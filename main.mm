@@ -1,5 +1,6 @@
-#import "main.hpp"
 #import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <obj/runtime.h>
 
 @implementation CharlieEngineInject : NSObject
 
