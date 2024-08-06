@@ -1,4 +1,4 @@
 #import <Foundation/Foundation.h>
-@interface CharlieEngineInject : NSObject
+@interface CharlieEngineInject
 + (void)loadLibrary;
 @end

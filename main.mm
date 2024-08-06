@@ -2,27 +2,27 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-@implementation CharlieEngineInject : NSObject
+@implementation CharlieEngineInject
 
 + (void)load {
     [self loadLibrary];
 }
 
-+ (void)loadLibrary {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Hello"
-                                                                   message:@"Hello, World!"
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK"
-                                                 style:UIAlertActionStyleDefault
-                                               handler:nil];
-    [alert addAction:ok];
++(void) loadLibrary() {
+      
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:"hello"
+                                                                              message:"yo!"
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+      
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:"go away"
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil];
+      
+    [alertController addAction:okAction];
 
-    // Get the key window's root view controller and present the alert
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *keyWindow = [[UIApplication sharedApplication] windows].firstObject;
-        UIViewController *rootViewController = keyWindow.rootViewController;
-        [rootViewController presentViewController:alert animated:YES completion:nil];
-    });
-}
+    UIViewController *rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+
+    [rootViewController presentViewController:alertController animated:YES completion:nil];
+  }
 
 @end
