@@ -8,7 +8,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Include CPM
 include(cmake/CPM.cmake)
 
-CPMAddPackage("gh:bitwizeshift/result#a97e66b")
+CPMAddPackage(
+    NAME result
+    GITHUB_REPOSITORY bitwizeshift/result
+    GIT_TAG a97e66b
+)
 
 CPMAddPackage(
     NAME tuliphook
@@ -50,6 +54,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(CharlieEngineInject
         "-framework UIKit"
         "-framework Foundation"
+        result
         tuliphook
     )
 
