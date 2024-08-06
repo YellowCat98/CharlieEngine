@@ -4,7 +4,6 @@ project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJCXX CXX)
 # Define the source files
 set(SOURCES
     main.mm
-    main.hpp
 )
 
 # Create the dynamic library
