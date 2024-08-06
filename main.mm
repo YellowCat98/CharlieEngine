@@ -8,7 +8,7 @@
     [self loadLibrary];
 }
 
-+(void) loadLibrary() {
++ (void)loadLibrary {
       
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"hello"
                                                                               message:@"yo!"
