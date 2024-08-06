@@ -22,6 +22,8 @@ set_target_properties(CharlieEngineInject PROPERTIES
 # Specify the output directory
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
 
+message(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+
 # Ensure CMake knows we're targeting iOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk)
