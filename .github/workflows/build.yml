@@ -25,5 +25,5 @@ jobs:
       - name: Upload dylib
         uses: actions/upload-artifact@v3
         with:
-          name: HelloWorldDylib.dylib
-          path: build/HelloWorldDylib.framework/HelloWorldDylib
+          name: CharlieEngineInject.dylib
+          path: build/CharlieEngineInject.framework/CharlieEngineInject

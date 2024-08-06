@@ -3,17 +3,19 @@ project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJC)
 
 # Define the source files
 set(SOURCES
-    main.m
-    main.h
+    HelloWorldDylib.m  # Replace with your actual source files
 )
 
 # Create the dynamic library
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
+add_library(CharlieEngineInject SHARED ${SOURCES})
 
 # Set target properties for iOS
-set_target_properties(${PROJECT_NAME} PROPERTIES
+set_target_properties(CharlieEngineInject PROPERTIES
     FRAMEWORK TRUE
     PLATFORM "iOS"
+    XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
+    XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
+    OUTPUT_NAME "CharlieEngineInject"  # Set the output name for the dylib
 )
 
 # Specify the output directory
