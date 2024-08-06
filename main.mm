@@ -8,7 +8,6 @@
 @implementation CharlieEngineInject
 
 + (void)load {
-    // Perform method swizzling
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
@@ -32,6 +31,8 @@
             } else {
                 method_exchangeImplementations(originalMethod, swizzledMethod);
             }
+        } else {
+            [self writeToLog:@"Failed to find DDAppDelegate class."];
         }
     });
 }
@@ -40,8 +41,10 @@
     // Call the original implementation
     [self charlie_applicationDidBecomeActive:application];
     
-    // Custom code to display the alert
     dispatch_async(dispatch_get_main_queue(), ^{
+        // Ensure UI-related code runs on the main thread
+        [self writeToLog:@"Presenting alert"];
+
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Hello"
                                                                                   message:@"Yo!"
                                                                            preferredStyle:UIAlertControllerStyleAlert];
@@ -58,9 +61,25 @@
         if (rootViewController && rootViewController.presentedViewController == nil) {
             [rootViewController presentViewController:alertController animated:YES completion:nil];
         } else {
-            NSLog(@"Failed to present alert: rootViewController is nil or already presenting another view controller.");
+            [self writeToLog:@"Failed to present alert: rootViewController is nil or already presenting another view controller."];
         }
     });
+}
+
++ (void)writeToLog:(NSString *)message {
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *logFilePath = [documentsPath stringByAppendingPathComponent:@"CharlieEngineInject.log"];
+    
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:logFilePath];
+    if (!fileHandle) {
+        [[NSFileManager defaultManager] createFileAtPath:logFilePath contents:nil attributes:nil];
+        fileHandle = [NSFileHandle fileHandleForWritingAtPath:logFilePath];
+    }
+    
+    [fileHandle seekToEndOfFile];
+    NSString *logMessage = [NSString stringWithFormat:@"%@\n", message];
+    [fileHandle writeData:[logMessage dataUsingEncoding:NSUTF8StringEncoding]];
+    [fileHandle closeFile];
 }
 
 @end
