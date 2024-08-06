@@ -8,6 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Include CPM
 include(cmake/CPM.cmake)
 
+CPMAddPackage("gh:bitwizeshift/result#a97e66b")
+
 CPMAddPackage(
     NAME tuliphook
     GITHUB_REPOSITORY geode-sdk/TulipHook
