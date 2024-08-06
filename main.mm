@@ -7,7 +7,15 @@
 
 @implementation CharlieEngineInject
 
-+ (void)load {
++ (void)initialize {
+    // Hook into the application's lifecycle event
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                         selector:@selector(applicationDidBecomeActive:)
+                                             name:UIApplicationDidBecomeActiveNotification
+                                           object:nil];
+}
+
++ (void)applicationDidBecomeActive:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
         // Ensure UI-related code runs on the main thread
 
@@ -27,6 +35,8 @@
 
         if (rootViewController && rootViewController.presentedViewController == nil) {
             [rootViewController presentViewController:alertController animated:YES completion:nil];
+        } else {
+            NSLog(@"Failed to present alert: rootViewController is nil or already presenting another view controller.");
         }
     });
 }
