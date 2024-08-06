@@ -21,10 +21,11 @@
         
         [alertController addAction:okAction];
 
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+        // Get the current key window
+        UIWindow *keyWindow = [UIApplication.sharedApplication.windows firstObject];
         UIViewController *rootViewController = keyWindow.rootViewController;
 
-        if (rootViewController.presentedViewController == nil) {
+        if (rootViewController && rootViewController.presentedViewController == nil) {
             [rootViewController presentViewController:alertController animated:YES completion:nil];
         }
     });
