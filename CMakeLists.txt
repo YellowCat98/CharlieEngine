@@ -61,5 +61,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     # Include directories for TulipHook
     target_include_directories(CharlieEngineInject PRIVATE
         ${tuliphook_SOURCE_DIR}/include
+        ${result_SOURCE_DIR}/include
     )
 endif()
