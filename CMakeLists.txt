@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJC)
+project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJCXX)
 
 # Define the source files
 set(SOURCES

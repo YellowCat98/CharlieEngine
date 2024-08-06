@@ -1,5 +1,3 @@
-#import <Foundation/Foundation.h>
-
-@interface HelloWorldDylib : NSObject
+@interface CharlieEngineInject : NSObject
 + (void)loadLibrary;
 @end
