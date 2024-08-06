@@ -2,7 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-@implementation CharlieEngineInject
+@implementation CharlieEngineInject : NSObject
 
 + (void)load {
     [self loadLibrary];
@@ -10,11 +10,11 @@
 
 +(void) loadLibrary() {
       
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:"hello"
-                                                                              message:"yo!"
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"hello"
+                                                                              message:@"yo!"
                                                                       preferredStyle:UIAlertControllerStyleAlert];
       
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:"go away"
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"go away"
                                                       style:UIAlertActionStyleDefault
                                                     handler:nil];
       
