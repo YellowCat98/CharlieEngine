@@ -1,7 +1,8 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
-
+#import <dlfcn.h>
+#import <fishhook.h>
 @interface CharlieEngineInject : NSObject
 @end
 

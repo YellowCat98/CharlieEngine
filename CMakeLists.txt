@@ -18,19 +18,6 @@ set_target_properties(CharlieEngineInject PROPERTIES
     OUTPUT_NAME "CharlieEngineInject"  # Set the output name for the dylib
 )
 
-# Specify the output directory for different configurations
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/output)
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/output)
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/output)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/output)
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/output)
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/output)
-
-#message("Library output directory: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-
 # Ensure CMake knows we're targeting iOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk)
@@ -41,5 +28,13 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(CharlieEngineInject
         "-framework UIKit"
         "-framework Foundation"
+    )
+
+    # Add fishhook subdirectory
+    add_subdirectory(fishhook)
+
+    # Link fishhook to your target
+    target_link_libraries(CharlieEngineInject
+        fishhook
     )
 endif()
