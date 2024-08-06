@@ -4,7 +4,7 @@ project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJC)
 # Define the source files
 set(SOURCES
     main.m
-    main.h  # Replace with your actual source files
+    main.h
 )
 
 # Create the dynamic library
@@ -21,3 +21,10 @@ set_target_properties(CharlieEngineInject PROPERTIES
 
 # Specify the output directory
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
+
+# Ensure CMake knows we're targeting iOS
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk)
+    set(CMAKE_OSX_ARCHITECTURES arm64)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "16.0")  # Set the minimum iOS version
+endif()
