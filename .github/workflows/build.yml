@@ -19,11 +19,14 @@ jobs:
       - name: Configure CMake
         run: cmake -S . -B build -G Xcode
 
-      - name: Get all files in build directory
-        run: ls /Users/runner/work/CharlieEngine/CharlieEngine/build/Release-iphoneos/
+      
 
       - name: Build
         run: cmake --build build --config Release
+      
+      - name: Get all files in build directory
+        run: ls /Users/runner/work/CharlieEngine/CharlieEngine/build/Release-iphoneos/
+      
 
 
       - name: Upload dylib
