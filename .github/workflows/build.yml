@@ -1,0 +1,32 @@
+name: Build iOS Dylib
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build iOS Dylib
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Xcode Command Line Tools
+        run: sudo xcode-select --switch /Library/Developer/CommandLineTools
+
+      - name: Install CMake
+        run: brew install cmake
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/cmake/Modules/Toolchains/Apple.cmake
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Upload dylib
+        uses: actions/upload-artifact@v3
+        with:
+          name: HelloWorldDylib.dylib
+          path: build/output/HelloWorldDylib.dylib
