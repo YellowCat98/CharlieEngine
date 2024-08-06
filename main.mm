@@ -1,5 +1,5 @@
 // HelloWorldDylib.m
-#import "main.h"
+#import "main.hpp"
 #import <UIKit/UIKit.h>
 
 @implementation CharlieEngineInject : NSObject
