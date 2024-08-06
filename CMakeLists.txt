@@ -24,7 +24,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
 
 # Ensure CMake knows we're targeting iOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(CMAKE_OSX_SYSROOT ${XCODE_PATH}/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk)
+    set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk)
     set(CMAKE_OSX_ARCHITECTURES arm64)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "16.0")  # Set the minimum iOS version
 endif()
