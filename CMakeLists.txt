@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJC)
 
-# Set the C++ standard (if needed)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # Define the source files
 set(SOURCES
     main.m
@@ -12,12 +8,12 @@ set(SOURCES
 )
 
 # Create the dynamic library
-add_library(CharlieEngineInject SHARED ${SOURCES})
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-# Specify the target properties for iOS
-set_target_properties(CharlieEngineInject PROPERTIES
+# Set target properties for iOS
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    FRAMEWORK TRUE
     PLATFORM "iOS"
-    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
 )
 
 # Specify the output directory
