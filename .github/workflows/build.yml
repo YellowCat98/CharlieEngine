@@ -26,4 +26,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: CharlieEngineInject.dylib
-          path: build/output/CharlieEngineInject.dylib
+          path: build/output/
