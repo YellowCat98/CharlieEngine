@@ -19,7 +19,7 @@
 
     // Get the key window's root view controller and present the alert
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+        UIWindow *keyWindow = [[UIApplication sharedApplication] windows].firstObject;
         UIViewController *rootViewController = keyWindow.rootViewController;
         [rootViewController presentViewController:alert animated:YES completion:nil];
     });
