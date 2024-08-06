@@ -2,7 +2,7 @@
 #import "main.h"
 #import <UIKit/UIKit.h>
 
-@implementation CharlieEngine
+@implementation CharlieEngineInject : NSObject
 
 + (void)load {
     [self loadLibrary];
