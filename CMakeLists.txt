@@ -12,7 +12,7 @@ add_library(CharlieEngineInject SHARED ${SOURCES})
 
 # Set target properties for iOS
 set_target_properties(CharlieEngineInject PROPERTIES
-    FRAMEWORK TRUE
+    FRAMEWORK FALSE
     PLATFORM "iOS"
     XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
     XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
