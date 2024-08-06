@@ -21,8 +21,7 @@ jobs:
 
       - name: Build
         run: cmake --build build --config Release
-      - name: Check if that thing exists
-        run: ls /Users/runner/work/CharlieEngine/CharlieEngine/build/output/
+
 
       - name: Upload dylib
         uses: actions/upload-artifact@v3
