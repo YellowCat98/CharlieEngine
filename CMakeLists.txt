@@ -27,4 +27,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk)
     set(CMAKE_OSX_ARCHITECTURES arm64)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "16.0")  # Set the minimum iOS version
+
+    # Add necessary frameworks for iOS
+    target_link_libraries(CharlieEngineInject
+        "-framework UIKit"
+        "-framework Foundation"
+    )
 endif()
