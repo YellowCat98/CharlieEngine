@@ -3,7 +3,8 @@ project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJC)
 
 # Define the source files
 set(SOURCES
-    HelloWorldDylib.m  # Replace with your actual source files
+    main.m
+    main.h  # Replace with your actual source files
 )
 
 # Create the dynamic library
