@@ -8,6 +8,7 @@
 @implementation CharlieEngineInject
 
 + (void)load {
+    [self writeToLog:"CharlieEngine Injection starting."]
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
