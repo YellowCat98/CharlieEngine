@@ -7,18 +7,41 @@
 
 @implementation CharlieEngineInject
 
-+ (void)initialize {
-    // Hook into the application's lifecycle event
-    [NSNotificationCenter.defaultCenter addObserver:self
-                                         selector:@selector(applicationDidBecomeActive:)
-                                             name:UIApplicationDidBecomeActiveNotification
-                                           object:nil];
++ (void)load {
+    // Perform method swizzling
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
+        if (appDelegateClass) {
+            SEL originalSelector = @selector(applicationDidBecomeActive:);
+            SEL swizzledSelector = @selector(charlie_applicationDidBecomeActive:);
+            
+            Method originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector);
+            Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
+            
+            BOOL didAddMethod = class_addMethod(appDelegateClass,
+                                                originalSelector,
+                                                method_getImplementation(swizzledMethod),
+                                                method_getTypeEncoding(swizzledMethod));
+            
+            if (didAddMethod) {
+                class_replaceMethod(appDelegateClass,
+                                    swizzledSelector,
+                                    method_getImplementation(originalMethod),
+                                    method_getTypeEncoding(originalMethod));
+            } else {
+                method_exchangeImplementations(originalMethod, swizzledMethod);
+            }
+        }
+    });
 }
 
-+ (void)applicationDidBecomeActive:(NSNotification *)notification {
++ (void)charlie_applicationDidBecomeActive:(UIApplication *)application {
+    // Call the original implementation
+    [self charlie_applicationDidBecomeActive:application];
+    
+    // Custom code to display the alert
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Ensure UI-related code runs on the main thread
-
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Hello"
                                                                                   message:@"Yo!"
                                                                            preferredStyle:UIAlertControllerStyleAlert];
@@ -29,7 +52,6 @@
         
         [alertController addAction:okAction];
 
-        // Get the current key window
         UIWindow *keyWindow = [UIApplication.sharedApplication.windows firstObject];
         UIViewController *rootViewController = keyWindow.rootViewController;
 
