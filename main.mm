@@ -7,18 +7,23 @@
 
 @implementation CharlieEngineInject
 
-+ (void)load {
-    [self writeToLog:@"CharlieEngine Injection starting."];
++ (void)initialize {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
-        if (appDelegateClass) {
-            SEL originalSelector = @selector(applicationDidBecomeActive:);
-            SEL swizzledSelector = @selector(charlie_applicationDidBecomeActive:);
-            
-            Method originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector);
-            Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
-            
+        [self performInjection];
+    });
+}
+
++ (void)performInjection {
+    Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
+    if (appDelegateClass) {
+        SEL originalSelector = @selector(applicationDidBecomeActive:);
+        SEL swizzledSelector = @selector(charlie_applicationDidBecomeActive:);
+        
+        Method originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector);
+        Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
+        
+        if (originalMethod && swizzledMethod) {
             BOOL didAddMethod = class_addMethod(appDelegateClass,
                                                 originalSelector,
                                                 method_getImplementation(swizzledMethod),
@@ -33,9 +38,11 @@
                 method_exchangeImplementations(originalMethod, swizzledMethod);
             }
         } else {
-            [self writeToLog:@"Failed to find DDAppDelegate class."];
+            [self writeToLog:@"Failed to find original or swizzled method."];
         }
-    });
+    } else {
+        [self writeToLog:@"Failed to find DDAppDelegate class."];
+    }
 }
 
 + (void)charlie_applicationDidBecomeActive:(UIApplication *)application {
