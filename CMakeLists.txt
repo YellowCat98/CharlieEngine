@@ -42,7 +42,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(CharlieEngineInject
         tuliphook
     )
-    target_include_directories(CharlieEngineInject
+    target_include_directories(CharlieEngineInject PRIVATE
         ${tuliphook_SOURCE_DIR}/include/tulip
         ${tuliphook_SOURCE_DIR}/include/tulip/platform
     )
