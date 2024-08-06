@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 #import <dlfcn.h>
-#import <fishhook.h>
+#import <tulip/TulipHook.hpp>
 @interface CharlieEngineInject : NSObject
 @end
 

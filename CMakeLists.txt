@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.14)
 project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJCXX CXX)
 
+# Include CPM
+include(cmake/CPM.cmake)
+
+CPMAddPackage(
+    NAME tuliphook
+    GITHUB_REPOSITORY geode-sdk/TulipHook
+    GIT_TAG main  # or specify a specific tag or branch if needed
+)
+
 # Define the source files
 set(SOURCES
     main.mm
@@ -30,11 +39,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         "-framework Foundation"
     )
 
-    # Add fishhook subdirectory
-    add_subdirectory(fishhook)
-
-    # Link fishhook to your target
     target_link_libraries(CharlieEngineInject
-        fishhook
+        tuliphook
     )
 endif()
