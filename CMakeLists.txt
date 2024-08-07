@@ -54,7 +54,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(CharlieEngineInject
         "-framework UIKit"
         "-framework Foundation"
-        result::result
+        result::Result
         tuliphook
     )
 
