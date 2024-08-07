@@ -7,35 +7,45 @@
 
 @implementation CharlieEngineInject
 
++ (void)initialize {
+    // Ensure this runs only once
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self performInjection];
+    });
+}
+
 + (void)performInjection {
-    Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
-    if (appDelegateClass) {
-        SEL originalSelector = @selector(application:didFinishLaunchingWithOptions:);
-        SEL swizzledSelector = @selector(charlie_application:didFinishLaunchingWithOptions:);
-        
-        Method originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector);
-        Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
-        
-        if (originalMethod && swizzledMethod) {
-            BOOL didAddMethod = class_addMethod(appDelegateClass,
-                                                originalSelector,
-                                                method_getImplementation(swizzledMethod),
-                                                method_getTypeEncoding(swizzledMethod));
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
+        if (appDelegateClass) {
+            SEL originalSelector = @selector(application:didFinishLaunchingWithOptions:);
+            SEL swizzledSelector = @selector(charlie_application:didFinishLaunchingWithOptions:);
             
-            if (didAddMethod) {
-                class_replaceMethod(appDelegateClass,
-                                    swizzledSelector,
-                                    method_getImplementation(originalMethod),
-                                    method_getTypeEncoding(originalMethod));
+            Method originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector);
+            Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
+            
+            if (originalMethod && swizzledMethod) {
+                BOOL didAddMethod = class_addMethod(appDelegateClass,
+                                                    originalSelector,
+                                                    method_getImplementation(swizzledMethod),
+                                                    method_getTypeEncoding(swizzledMethod));
+                
+                if (didAddMethod) {
+                    class_replaceMethod(appDelegateClass,
+                                        swizzledSelector,
+                                        method_getImplementation(originalMethod),
+                                        method_getTypeEncoding(originalMethod));
+                } else {
+                    method_exchangeImplementations(originalMethod, swizzledMethod);
+                }
             } else {
-                method_exchangeImplementations(originalMethod, swizzledMethod);
+                [self writeToLog:@"Failed to find original or swizzled method."];
             }
         } else {
-            [self writeToLog:@"Failed to find original or swizzled method."];
+            [self writeToLog:@"Failed to find DDAppDelegate class."];
         }
-    } else {
-        [self writeToLog:@"Failed to find DDAppDelegate class."];
-    }
+    });
 }
 
 + (BOOL)charlie_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
