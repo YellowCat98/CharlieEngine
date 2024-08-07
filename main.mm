@@ -1,24 +1,17 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
-#import <dlfcn.h>
 
 @interface CharlieEngineInject : NSObject
 @end
 
 @implementation CharlieEngineInject
 
-__attribute__((constructor))
-void dylibInit() {
-    [CharlieEngineInject writeToLog:@"CharlieEngineInject Started!"];
-    [CharlieEngineInject performInjection];
-}
-
 + (void)performInjection {
     Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
     if (appDelegateClass) {
-        SEL originalSelector = @selector(applicationDidBecomeActive:);
-        SEL swizzledSelector = @selector(charlie_applicationDidBecomeActive:);
+        SEL originalSelector = @selector(application:didFinishLaunchingWithOptions:);
+        SEL swizzledSelector = @selector(charlie_application:didFinishLaunchingWithOptions:);
         
         Method originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector);
         Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
@@ -45,13 +38,13 @@ void dylibInit() {
     }
 }
 
-+ (void)charlie_applicationDidBecomeActive:(UIApplication *)application {
++ (BOOL)charlie_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Call the original implementation
-    [self charlie_applicationDidBecomeActive:application];
+    BOOL result = [self charlie_application:application didFinishLaunchingWithOptions:launchOptions];
     
+    // Perform your custom actions here
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Ensure UI-related code runs on the main thread
-        [self writeToLog:@"Presenting alert"];
+        [self writeToLog:@"Performing post-launch tasks"];
 
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Hello"
                                                                                   message:@"Yo!"
@@ -72,6 +65,8 @@ void dylibInit() {
             [self writeToLog:@"Failed to present alert: rootViewController is nil or already presenting another view controller."];
         }
     });
+    
+    return result;
 }
 
 + (void)writeToLog:(NSString *)message {
