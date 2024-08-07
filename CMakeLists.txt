@@ -45,6 +45,7 @@ set_target_properties(CharlieEngineInject PROPERTIES
 )
 
 find_package(Result REQUIRED)
+find_package(TulipHookRoot REQUIRED)
 
 # Ensure CMake knows we're targeting iOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
@@ -57,7 +58,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         "-framework UIKit"
         "-framework Foundation"
         Result::Result
-        tuliphook
+        TulipHookRoot
     )
 
     # Include directories for TulipHook
