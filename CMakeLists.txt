@@ -8,24 +8,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Include CPM
 include(cmake/CPM.cmake)
 
-CPMAddPackage(
-    NAME result
-    GITHUB_REPOSITORY bitwizeshift/result
-    GIT_TAG a97e66b
-)
-
-CPMAddPackage(
-    NAME tuliphook
-    GITHUB_REPOSITORY geode-sdk/TulipHook
-    GIT_TAG main  # or specify a specific tag or branch if needed
-)
-
-# Ensure the package is correctly fetched
-if (tuliphook_ADDED)
-    message(STATUS "TulipHook successfully added")
-else()
-    message(FATAL_ERROR "Failed to add TulipHook")
-endif()
 
 # Define the source files
 set(SOURCES
@@ -44,9 +26,6 @@ set_target_properties(CharlieEngineInject PROPERTIES
     OUTPUT_NAME "CharlieEngineInject"  # Set the output name for the dylib
 )
 
-find_package(Result REQUIRED)
-find_package(TulipHookRoot REQUIRED)
-
 # Ensure CMake knows we're targeting iOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk)
@@ -57,8 +36,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(CharlieEngineInject
         "-framework UIKit"
         "-framework Foundation"
-        Result::Result
-        TulipHookRoot
     )
 
     # Include directories for TulipHook
