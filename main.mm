@@ -11,75 +11,36 @@
 + (void)initializeInjection {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [self swizzleUIApplication];
+        [self swizzleAppDelegate];
     });
-}
-
-+ (void)swizzleUIApplication {
-    Class uiApplicationClass = [UIApplication class];
-    SEL originalSelector = @selector(application:didFinishLaunchingWithOptions:);
-    SEL swizzledSelector = @selector(charlie_application:didFinishLaunchingWithOptions:);
-
-    Method originalMethod = class_getInstanceMethod(uiApplicationClass, originalSelector);
-    Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
-
-    if (originalMethod && swizzledMethod) {
-        method_exchangeImplementations(originalMethod, swizzledMethod);
-    } else {
-        [self writeToLog:@"Failed to find original or swizzled method on UIApplication."];
-    }
-}
-
-+ (BOOL)charlie_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Call the original implementation
-    BOOL result = [self charlie_application:application didFinishLaunchingWithOptions:launchOptions];
-
-    // Perform the actual swizzling of DDAppDelegate here
-    [self swizzleAppDelegate];
-
-    return result;
 }
 
 + (void)swizzleAppDelegate {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
-        if (appDelegateClass) {
-            SEL originalSelector = @selector(application:didFinishLaunchingWithOptions:);
-            SEL swizzledSelector = @selector(charlie_appDelegate_application:didFinishLaunchingWithOptions:);
+    Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
+    if (appDelegateClass) {
+        SEL originalSelector = @selector(initialize);
+        SEL swizzledSelector = @selector(charlie_initialize);
 
-            Method originalMethod = class_getInstanceMethod(appDelegateClass, originalSelector);
-            Method swizzledMethod = class_getInstanceMethod(self, swizzledSelector);
+        Method originalMethod = class_getClassMethod(appDelegateClass, originalSelector);
+        Method swizzledMethod = class_getClassMethod(self, swizzledSelector);
 
-            if (originalMethod && swizzledMethod) {
-                BOOL didAddMethod = class_addMethod(appDelegateClass,
-                                                    originalSelector,
-                                                    method_getImplementation(swizzledMethod),
-                                                    method_getTypeEncoding(swizzledMethod));
-
-                if (didAddMethod) {
-                    class_replaceMethod(appDelegateClass,
-                                        swizzledSelector,
-                                        method_getImplementation(originalMethod),
-                                        method_getTypeEncoding(originalMethod));
-                } else {
-                    method_exchangeImplementations(originalMethod, swizzledMethod);
-                }
-            } else {
-                [self writeToLog:@"Failed to find original or swizzled method on DDAppDelegate."];
-            }
+        if (originalMethod && swizzledMethod) {
+            method_exchangeImplementations(originalMethod, swizzledMethod);
         } else {
-            [self writeToLog:@"Failed to find DDAppDelegate class."];
+            [self writeToLog:@"Failed to find original or swizzled method on DDAppDelegate."];
         }
-    });
+    } else {
+        [self writeToLog:@"Failed to find DDAppDelegate class."];
+    }
 }
 
-+ (BOOL)charlie_appDelegate_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
++ (void)charlie_initialize {
     // Call the original implementation
-    BOOL result = [self charlie_appDelegate_application:application didFinishLaunchingWithOptions:launchOptions];
+    [self charlie_initialize];
 
     // Perform your custom actions here
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self writeToLog:@"Performing post-launch tasks"];
+        [self writeToLog:@"Performing post-initialization tasks"];
 
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Hello"
                                                                                   message:@"Yo!"
@@ -100,8 +61,6 @@
             [self writeToLog:@"Failed to present alert: rootViewController is nil or already presenting another view controller."];
         }
     });
-
-    return result;
 }
 
 + (void)writeToLog:(NSString *)message {
