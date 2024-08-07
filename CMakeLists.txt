@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Include CPM
 include(cmake/CPM.cmake)
 
+# Add packages using CPM
 CPMAddPackage(
     NAME result
     GITHUB_REPOSITORY bitwizeshift/result
@@ -16,53 +17,36 @@ CPMAddPackage(
 
 CPMAddPackage(
     NAME tuliphook
-    GITHUB_REPOSITORY geode-sdk/TulipHook
-    GIT_TAG main  # or specify a specific tag or branch if needed
+    GITHUB_REPOSITORY charlatano/tuliphook
+    GIT_TAG main
 )
 
-# Ensure the package is correctly fetched
-if (tuliphook_ADDED)
-    message(STATUS "TulipHook successfully added")
-else()
-    message(FATAL_ERROR "Failed to add TulipHook")
-endif()
+# Add the include directories for tuliphook
+include_directories(${tuliphook_SOURCE_DIR}/include)
 
-# Define the source files
-set(SOURCES
-    main.mm
-)
+# Add the library directories for tuliphook
+link_directories(${tuliphook_SOURCE_DIR}/lib)
 
-# Create the dynamic library
-add_library(CharlieEngineInject SHARED ${SOURCES})
+# Create the executable/library
+add_library(CharlieEngineInject SHARED main.mm)
 
-# Set target properties for iOS
+# Link the libraries
+target_link_libraries(CharlieEngineInject PRIVATE tuliphook result)
+
+# Additional include directories
+target_include_directories(CharlieEngineInject PRIVATE ${result_SOURCE_DIR}/include)
+
+# Set the install name for the library
+set_target_properties(CharlieEngineInject PROPERTIES INSTALL_NAME_DIR "@rpath")
+
+# Ensure the correct frameworks are linked
+find_library(UIKIT_FRAMEWORK UIKit REQUIRED)
+find_library(FOUNDATION_FRAMEWORK Foundation REQUIRED)
+target_link_libraries(CharlieEngineInject PRIVATE ${UIKIT_FRAMEWORK} ${FOUNDATION_FRAMEWORK})
+
+# Ensure the output directories are correctly set
 set_target_properties(CharlieEngineInject PROPERTIES
-    FRAMEWORK FALSE
-    PLATFORM "iOS"
-    XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
-    XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
-    OUTPUT_NAME "CharlieEngineInject"  # Set the output name for the dylib
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release-iphoneos
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release-iphoneos
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release-iphoneos
 )
-
-find_package(Result REQUIRED)
-
-# Ensure CMake knows we're targeting iOS
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk)
-    set(CMAKE_OSX_ARCHITECTURES arm64)
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "16.0")  # Set the minimum iOS version
-
-    # Add necessary frameworks for iOS
-    target_link_libraries(CharlieEngineInject
-        "-framework UIKit"
-        "-framework Foundation"
-        Result::Result
-        tuliphook
-    )
-
-    # Include directories for TulipHook
-    target_include_directories(CharlieEngineInject PRIVATE
-        ${tuliphook_SOURCE_DIR}/include
-        ${result_SOURCE_DIR}/include
-    )
-endif()
