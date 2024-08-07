@@ -10,8 +10,7 @@
 
 __attribute__((constructor))
 void dylibInit() {
-    [self writeToLog:@"CharlieEngineInject Started!"];
-    // Ensure your code runs here
+    [CharlieEngineInject writeToLog:@"CharlieEngineInject Started!"];
     [CharlieEngineInject performInjection];
 }
 
