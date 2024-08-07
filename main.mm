@@ -8,11 +8,11 @@
 
 @implementation CharlieEngineInject
 
-+ (void)initialize {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        [self performInjection];
-    });
+__attribute__((constructor))
+void dylibInit() {
+    [self writeToLog:@"CharlieEngineInject Started!"];
+    // Ensure your code runs here
+    [CharlieEngineInject performInjection];
 }
 
 + (void)performInjection {
