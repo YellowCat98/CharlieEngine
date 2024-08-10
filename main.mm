@@ -3,6 +3,7 @@
 
 @interface CharlieEngineInject : NSObject
 + (void)initializeInjection;
++ (void)writeToLog:(NSString *)message;
 @end
 
 @implementation CharlieEngineInject
@@ -50,6 +51,6 @@
 
 __attribute__((constructor))
 static void initialize() {
-    [self writeToLog:@"CharlieEngine Injected!"]
+    [CharlieEngineInject writeToLog:@"CharlieEngine Injected!"];
     [CharlieEngineInject initializeInjection];
 }
