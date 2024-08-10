@@ -1,6 +1,5 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import <objc/runtime.h>
 
 @interface CharlieEngineInject : NSObject
 + (void)initializeInjection;
@@ -9,39 +8,7 @@
 @implementation CharlieEngineInject
 
 + (void)initializeInjection {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        [self swizzleAppDelegate];
-    });
-}
-
-+ (void)swizzleAppDelegate {
-    Class appDelegateClass = NSClassFromString(@"DDAppDelegate");
-    if (appDelegateClass) {
-        SEL originalSelector = @selector(initialize);
-        SEL swizzledSelector = @selector(charlie_initialize);
-
-        Method originalMethod = class_getClassMethod(appDelegateClass, originalSelector);
-        Method swizzledMethod = class_getClassMethod(self, swizzledSelector);
-
-        if (originalMethod && swizzledMethod) {
-            method_exchangeImplementations(originalMethod, swizzledMethod);
-        } else {
-            [self writeToLog:@"Failed to find original or swizzled method on DDAppDelegate."];
-        }
-    } else {
-        [self writeToLog:@"Failed to find DDAppDelegate class."];
-    }
-}
-
-+ (void)charlie_initialize {
-    // Call the original implementation
-    [self charlie_initialize];
-
-    // Perform your custom actions here
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self writeToLog:@"Performing post-initialization tasks"];
-
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Hello"
                                                                                   message:@"Yo!"
                                                                            preferredStyle:UIAlertControllerStyleAlert];
@@ -80,3 +47,8 @@
 }
 
 @end
+
+__attribute__((constructor))
+static void initialize() {
+    [CharlieEngineInject initializeInjection];
+}
