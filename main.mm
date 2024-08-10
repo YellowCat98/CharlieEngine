@@ -50,5 +50,6 @@
 
 __attribute__((constructor))
 static void initialize() {
+    [self writeToLog:@"CharlieEngine Injected!"]
     [CharlieEngineInject initializeInjection];
 }
