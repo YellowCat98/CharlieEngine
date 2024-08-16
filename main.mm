@@ -51,6 +51,8 @@
 
 __attribute__((constructor))
 static void initialize() {
-    [CharlieEngineInject writeToLog:@"CharlieEngine Injected!"];
-    [CharlieEngineInject initializeInjection];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [CharlieEngineInject writeToLog:@"Delayed initialization"];
+        [CharlieEngineInject initializeInjection];
+    });
 }
