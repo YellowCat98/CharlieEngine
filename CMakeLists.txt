@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(CharlieEngineInject VERSION 1.0 LANGUAGES OBJCXX CXX)
+project(CharlieEngine VERSION 1.0 LANGUAGES OBJCXX CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,14 +8,18 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Include CPM
 include(cmake/CPM.cmake)
 
-
-# Define the source files
+# Define the source files for each library
 set(INJECT_SOURCES
     inject/main.mm
 )
 
-# Create the dynamic library
+set(LOADER_SOURCES
+    loader/entry.mm
+)
+
+# Create the dynamic libraries
 add_library(CharlieEngineInject SHARED ${INJECT_SOURCES})
+add_library(CharlieEngineLoader SHARED ${LOADER_SOURCES})
 
 # Set target properties for iOS
 set_target_properties(CharlieEngineInject PROPERTIES
@@ -23,7 +27,15 @@ set_target_properties(CharlieEngineInject PROPERTIES
     PLATFORM "iOS"
     XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
     XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
-    OUTPUT_NAME "CharlieEngineInject"  # Set the output name for the dylib
+    OUTPUT_NAME "CharlieEngineInject"
+)
+
+set_target_properties(CharlieEngineLoader PROPERTIES
+    FRAMEWORK FALSE
+    PLATFORM "iOS"
+    XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
+    XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
+    OUTPUT_NAME "CharlieEngineLoader"
 )
 
 # Ensure CMake knows we're targeting iOS
@@ -34,6 +46,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 
     # Add necessary frameworks for iOS
     target_link_libraries(CharlieEngineInject
+        "-framework UIKit"
+        "-framework Foundation"
+    )
+
+    target_link_libraries(CharlieEngineLoader
         "-framework UIKit"
         "-framework Foundation"
     )
