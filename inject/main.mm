@@ -16,7 +16,6 @@ void showAlert(NSString *tiddies, NSString *meows, bool remeowbutton, NSString *
 		UIAlertAction *fuckoff = [UIAlertAction actionWithTitle:gyatt style:UIAlertActionStyleDefault handler:nil];
 		[alert addAction:fuckoff];
 
-
 		[currentFucker presentViewController:alert animated:YES completion:nil];
 	});
 }
@@ -25,7 +24,7 @@ void showAlert(NSString *tiddies, NSString *meows, bool remeowbutton, NSString *
 
 __attribute__((constructor))
 static void initialize() {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        showAlert("hi", "charlie gyatt a gyat!", false, "ok");
-    });
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+		showAlert(@"hi", @"charlie gyatt a gyat!", false, @"ok");
+	});
 }
