@@ -10,12 +10,12 @@ include(cmake/CPM.cmake)
 
 
 # Define the source files
-set(SOURCES
-    main.mm
+set(INJECT_SOURCES
+    inject/main.mm
 )
 
 # Create the dynamic library
-add_library(CharlieEngineInject SHARED ${SOURCES})
+add_library(CharlieEngineInject SHARED ${INJECT_SOURCES})
 
 # Set target properties for iOS
 set_target_properties(CharlieEngineInject PROPERTIES
@@ -36,11 +36,5 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(CharlieEngineInject
         "-framework UIKit"
         "-framework Foundation"
-    )
-
-    # Include directories for TulipHook
-    target_include_directories(CharlieEngineInject PRIVATE
-        ${tuliphook_SOURCE_DIR}/include
-        ${result_SOURCE_DIR}/include
     )
 endif()
