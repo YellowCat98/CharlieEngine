@@ -2,11 +2,11 @@
 #import <Foundation/Foundation.h>
 #include <string>
 
-@interface CharlieEngineInject : NSObject
-@end
+//@interface CharlieEngineInject : NSObject
+//@end
 
-@implementation CharlieEngineInject
-@end
+//@implementation CharlieEngineInject
+//@end
 
 __attribute__((constructor))
 static void initialize() {
