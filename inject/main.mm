@@ -6,7 +6,7 @@
 
 @implementation CharlieEngineInject
 
-void showAlert(NSString *tiddies, NSString *meows, bool remeowbutton, NSString *gyatt) {
+void showAlert(NSString *tiddies, NSString *meows, NSString *gyatt) {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
         if (!keyWindow) {
@@ -33,11 +33,36 @@ void showAlert(NSString *tiddies, NSString *meows, bool remeowbutton, NSString *
     });
 }
 
+// Function to write data to a file in the Documents directory
+void writeFileToDocumentsDirectory(const std::string& fileName, const std::string& content) {
+    // Convert std::string to NSString
+    NSString *fileNameNSString = [NSString stringWithUTF8String:fileName.c_str()];
+    NSString *contentNSString = [NSString stringWithUTF8String:content.c_str()];
+
+    // Get the path to the Documents directory
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    // Create the full file path
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:fileNameNSString];
+    
+    // Write the content to the file
+    NSError *error = nil;
+    BOOL success = [contentNSString writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+    
+    if (!success) {
+        NSLog(@"Failed to write file: %@", [error localizedDescription]);
+    } else {
+        NSLog(@"File successfully written to %@", filePath);
+    }
+}
+
+
 @end
 
 __attribute__((constructor))
 static void initialize() {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        showAlert(@"hi", @"charlie gyatt a gyat!", false, @"ok");
+        writeFileToDocumentsDirectory("test.txt", "HI");
     });
 }
