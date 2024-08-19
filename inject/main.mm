@@ -33,7 +33,28 @@ static void initialize() {
 			if (!success) {
 				NSLog(@"Error writing file: %@", [error localizedDescription]);
 			}
-	}
+	}	
+		// why thgis is so stupid
+	    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"skibidi" 
+                                                                       message:@"hi" 
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"HI" 
+                                                               style:UIAlertActionStyleCancel 
+                                                             handler:nil];
+        UIAlertAction *otherAction = [UIAlertAction actionWithTitle:@"go away" 
+                                                              style:UIAlertActionStyleDefault 
+                                                            handler:nil];
+        
+        [alert addAction:cancelAction];
+        [alert addAction:otherAction];
 
-
+        UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (rootViewController.presentedViewController) {
+            rootViewController = rootViewController.presentedViewController;
+        }
+        
+        [rootViewController presentViewController:alert animated:YES completion:nil];
+    });
 }
