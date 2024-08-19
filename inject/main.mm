@@ -11,7 +11,7 @@ static void initialize() {
 	NSString* dylibPath = [documentsDirectory stringByAppendingPathComponent:@"libCharlieEngineLoader.dylib"];
 
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dylibPath]) {
-		void *handle = dlopen(dylibPath, RTLD_LAZY); // what does that last arg do
+		void *handle = dlopen([dylibPath UTF8String], RTLD_LAZY); // what does that last arg do
 		if (!handle) {
 			NSLog(@"Error loading libCharlieEngineLoader.dylib: %s", dlerror());
 			NSString* errorPath = [documentsDirectory stringByAppendingPathComponent:@"last_err.txt"];
