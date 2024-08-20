@@ -19,6 +19,6 @@ namespace CharlieEngine {
             BOOL success = [newLog writeToFile:logPath atomically:YES encoding:NSUTF8StringEncoding error:&idk];
 
             return str;
-        };
+        }
     }
 }
