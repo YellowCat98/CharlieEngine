@@ -6,7 +6,7 @@ namespace CharlieEngine {
     namespace log {
         NSString *log(NSString *str, NSString* logName) {
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-            NSString *documentsDirectory [paths objectAtIndex:0];
+            NSString *documentsDirectory = [paths objectAtIndex:0];
 
             NSString* logPath = [documentsDirectory stringByAppendingPathComponent:logName];
             NSError *error = nil;
