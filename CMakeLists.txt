@@ -8,6 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Include CPM
 include(cmake/CPM.cmake)
 
+include_directories(${CMAKE_SOURCE_DIR}/utils)
+
 # Define the source files for each library
 set(INJECT_SOURCES
     inject/main.mm
@@ -20,6 +22,9 @@ set(LOADER_SOURCES
 # Create the dynamic libraries
 add_library(CharlieEngineInject SHARED ${INJECT_SOURCES})
 add_library(CharlieEngineLoader SHARED ${LOADER_SOURCES})
+
+target_include_directories(CharlieEngineInject PRIVATE ${CMAKE_SOURCE_DIR}/utils)
+target_include_directories(CharlieEngineLoader PRIVATE ${CMAKE_SOURCE_DIR}/utils)
 
 # Set target properties for iOS
 set_target_properties(CharlieEngineInject PROPERTIES

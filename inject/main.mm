@@ -2,6 +2,7 @@
 #import <Foundation/Foundation.h>
 #include <string>
 #include <dlfcn.h>
+#include "../utils.hpp"
 
 void downloadLoader(NSString* urlString, NSString* outputPath) {
 	NSURL *url = [NSURL URLWithString:urlString];
