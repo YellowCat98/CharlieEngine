@@ -17,6 +17,8 @@ namespace CharlieEngine {
             NSString *newLog = [wholeLog stringByAppendingString:str];
             NSError* idk;
             BOOL success = [newLog writeToFile:logPath, atomically:YES encoding:NSUTF8StringEncoding error:&idk];
+
+            return str;
         };
     }
 }
