@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <errno.h>
+#include <sys/codesign.h>
+#include <stdbool.h>
 
 namespace CharlieEngine {
     namespace log {
