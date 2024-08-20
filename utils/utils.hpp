@@ -1,6 +1,11 @@
 #pragma once
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <errno.h>
 
 namespace CharlieEngine {
     namespace log {
@@ -24,13 +29,23 @@ namespace CharlieEngine {
 
     }
     bool hasJIT(int pid) {
-        int flags;
-        bool actuallyhasJIT = (flags & 0x10000000) != 0;
-        if (!actuallyhasJIT) {
-            sleep(1);
-            hasJIT(pid);
+        int flags = 0;
+
+        while (true) {
+            int ret = csops(pid, 0x00000000, &flags, sizeof(flags));
+            if (ret != 0) {
+                perror("csops failed");
+                return false;
+            }
+
+            bool actuallyhasJIT = (flags & 0x10000000) != 0;
+
+            if (actuallyhasJIT) {
+                return true;  // JIT is enabled, exit the loop and return true
+            }
+
+            sleep(1);  // Wait for 1 second before checking again
         }
-        return true;
     }
 
 }
