@@ -23,12 +23,12 @@ namespace CharlieEngine {
 
 
     }
-    bool hasJit(int pid) {
+    bool hasJIT(int pid) {
     int flags;
         bool actuallyhasJIT = (flags & 0x10000000) != 0;
         if (!actuallyhasJIT) {
             sleep(1);
-            hasJit(pid);
+            hasJIT(pid);
         }
         return true;
     }
