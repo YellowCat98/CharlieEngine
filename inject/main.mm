@@ -3,8 +3,8 @@
 #include <string>
 #include <dlfcn.h>
 
-void downloadLoader(NSString* url, NSString* outputPath) {
-	NSURL *url = [NSURL URLWithString:url];
+void downloadLoader(NSString* urlString, NSString* outputPath) {
+	NSURL *url = [NSURL URLWithString:urlString];
 	NSURLSession *session = [NSURLSession sharedSession];
 
 	NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
