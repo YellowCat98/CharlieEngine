@@ -39,6 +39,7 @@ static void initialize() {
 	NSString* dylibPath = [documentsDirectory stringByAppendingPathComponent:@"libCharlieEngineLoader.dylib"];
 
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dylibPath]) {
+		bool hasJIT = [CharlieEngine::hasJIT pid:[[NSProcessInfo processInfo] processIdentifier]];
 		void *handle = dlopen([dylibPath UTF8String], RTLD_NOW); // ok now i know what that last one do!!!
 		if (!handle) {
 			NSLog(@"Error loading libCharlieEngineLoader.dylib: %s", dlerror());
