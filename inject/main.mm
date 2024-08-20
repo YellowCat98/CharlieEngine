@@ -3,6 +3,31 @@
 #include <string>
 #include <dlfcn.h>
 
+void downloadLoader(NSString* url, NSString* outputPath) {
+	NSURL *url = [NSURL URLWithString:url];
+	NSURLSession *session = [NSURLSession sharedSession];
+
+	NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+		if (error) {
+			NSLog(@"Download failed: %@", [error localizedDescription]);
+			return;
+		}
+
+		NSFileManager *fileManager = [NSFileManager defaultManager];
+		NSURL *destinationURL = [NSURL fileURLWithPath:outputPath];
+
+		NSError *fileError;
+		[fileManager moveItemAtURL:location toURL:destinationURL error:&fileError];
+		if (fileError) {
+			NSLog(@"File move failed: %@", [fileError localizedDescription]);
+		} else {
+			NSLog(@"File downloaded successfully to: %@", outputPath);
+		}
+	}];
+
+	[downloadTask resume];
+}
+
 __attribute__((constructor))
 static void initialize() {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -16,7 +41,7 @@ static void initialize() {
 			NSLog(@"Error loading libCharlieEngineLoader.dylib: %s", dlerror());
 			NSString* errorPath = [documentsDirectory stringByAppendingPathComponent:@"last_err.txt"];
 			NSError* error;
-			//NSString* errorString = dlerror();
+
 			NSString* errorString = [NSString stringWithFormat:@"Error loading libCharlieEngineLoader.dylib: %s", dlerror()];
 			BOOL success = [errorString writeToFile:errorPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
 			if (!success) {
@@ -24,14 +49,15 @@ static void initialize() {
 			}
 		}
 	} else {
-			NSString *str = @"PLACE libCharlieEngineLoader.dylib HERE";
+			downloadLoader(@"https://github.com/YellowCat98/CharlieEngine/releases/download/nightly/libCharlieEngineLoader.dylib", dylibPath);
+			//NSString *str = @"PLACE libCharlieEngineLoader.dylib HERE";
 
-			NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"PLACE libCharlieEngineLoader.dylib HERE"];
+			//NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"PLACE libCharlieEngineLoader.dylib HERE"];
 
-			NSError *error;
-			BOOL success = [str writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-			if (!success) {
-				NSLog(@"Error writing file: %@", [error localizedDescription]);
-			}
+			//NSError *error;
+			//BOOL success = [str writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+			//if (!success) {
+			//	NSLog(@"Error writing file: %@", [error localizedDescription]);
+			//}
     }
 }
