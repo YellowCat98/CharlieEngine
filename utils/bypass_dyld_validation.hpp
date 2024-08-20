@@ -50,7 +50,7 @@ namespace CharlieEngine {
             ret
         );
 
-        static bool redirectFunction(char *name, void *patchAddr, void *target) {
+        static bool redirectFunction(const char *name, void *patchAddr, void *target) {
             kern_return_t kret = builtin_vm_protect(mach_task_self(), (vm_address_t)patchAddr, sizeof(patch), false, PROT_READ | PROT_WRITE | VM_PROT_COPY);
             if (kret != KERN_SUCCESS) {
                 NSLog(@"[DyldLVBypass] vm_protect(RW) fails at line %d", __LINE__);
@@ -70,7 +70,7 @@ namespace CharlieEngine {
             return TRUE;
         }
 
-        static bool searchAndPatch(char *name, char *base, char *signature, int length, void *target) {
+        static bool searchAndPatch(const char *name, const char *base, const char *signature, int length, void *target) {
             char *patchAddr = NULL;
             
             for(int i=0; i < 0x100000; i++) {
@@ -90,7 +90,7 @@ namespace CharlieEngine {
         }
 
         static void *getDyldBase(void) {
-            return (void *)_alt_dyld_get_all_image_infos()->dyldImageLoadAddress;
+            return (void *)dyld_get_all_image_infos()->dyldImageLoadAddress;
         }
 
         static void* hooked_mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset) {
@@ -112,7 +112,7 @@ namespace CharlieEngine {
                 
                 // Check if the file is our "in-memory" file
                 if (__fcntl(fildes, F_GETPATH, filePath) != -1) {
-                    const char *homeDir = LCHomePath();
+                    const char *homeDir = [NSHomeDirectory() UTF8String];
                     if (!strncmp(filePath, homeDir, strlen(homeDir))) {
                         fsignatures_t *fsig = (fsignatures_t*)param;
                         // called to check that cert covers file.. so we'll make it cover everything ;)
