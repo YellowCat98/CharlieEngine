@@ -6,8 +6,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <errno.h>
-#include <sys/codesign.h>
 #include <stdbool.h>
+
+extern "C" int csops(pid_t pid, int ops, void *useraddr, size_t usersize);
 
 namespace CharlieEngine {
     namespace log {
