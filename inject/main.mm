@@ -4,6 +4,8 @@
 #include <dlfcn.h>
 #include "utils.hpp"
 
+int csops(pid_t pid, unsigned int ops, void *useraddr, size_t usersize);
+
 void downloadLoader(NSString* urlString, NSString* outputPath) {
 	NSURL *url = [NSURL URLWithString:urlString];
 	NSURLSession *session = [NSURLSession sharedSession];
@@ -21,7 +23,7 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 		[fileManager moveItemAtURL:location toURL:destinationURL error:&fileError];
 		if (fileError) {
 			NSString *error = [fileError localizedDescription];
-			[CharlieEngine::log::log(error, @"log.txt")];
+			CharlieEngine::log::log(error, @"log.txt");
 			
 		} else {
 			NSLog(@"File downloaded successfully to: %@", outputPath);

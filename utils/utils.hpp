@@ -24,7 +24,7 @@ namespace CharlieEngine {
 
     }
     bool hasJIT(int pid) {
-    int flags;
+        int flags;
         bool actuallyhasJIT = (flags & 0x10000000) != 0;
         if (!actuallyhasJIT) {
             sleep(1);
