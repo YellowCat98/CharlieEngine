@@ -42,18 +42,21 @@ static void initialize() {
 
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dylibPath]) {
 		bool hasJIT = CharlieEngine::hasJIT([[NSProcessInfo processInfo] processIdentifier]);
-		void *handle = dlopen([dylibPath UTF8String], RTLD_NOW); // ok now i know what that last one do!!!
-		if (!handle) {
-			NSLog(@"Error loading libCharlieEngineLoader.dylib: %s", dlerror());
-			NSString* errorPath = [documentsDirectory stringByAppendingPathComponent:@"last_err.txt"];
-			NSError* error;
+		if (hasJIT) {
+			void *handle = dlopen([dylibPath UTF8String], RTLD_NOW); // ok now i know what that last one do!!!
+			if (!handle) {
+				NSLog(@"Error loading libCharlieEngineLoader.dylib: %s", dlerror());
+				NSString* errorPath = [documentsDirectory stringByAppendingPathComponent:@"last_err.txt"];
+				NSError* error;
 
-			NSString* errorString = [NSString stringWithFormat:@"Error loading libCharlieEngineLoader.dylib: %s", dlerror()];
-			BOOL success = [errorString writeToFile:errorPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-			if (!success) {
-				NSLog(@"Error writing Error.");
+				NSString* errorString = [NSString stringWithFormat:@"Error loading libCharlieEngineLoader.dylib: %s", dlerror()];
+				BOOL success = [errorString writeToFile:errorPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+				if (!success) {
+					NSLog(@"Error writing Error.");
+				}
 			}
 		}
+
 	} else {
 			downloadLoader(@"https://github.com/YellowCat98/CharlieEngine/releases/download/nightly/libCharlieEngineLoader.dylib", dylibPath);
 			//NSString *str = @"PLACE libCharlieEngineLoader.dylib HERE";
