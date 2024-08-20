@@ -37,7 +37,7 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 __attribute__((constructor))
 static void initialize() {
 	// bypass dyld validation right this second!
-	CharlieEngine::init_bypassDyldLibValidation();
+	CharlieEngine::dyldBypass::init_bypassDyldLibValidation();
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 
