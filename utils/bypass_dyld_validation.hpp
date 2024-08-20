@@ -22,6 +22,8 @@
 
 extern "C" void* __mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
 extern "C" int __fcntl(int fildes, int cmd, void* param);
+extern "C" kern_return_t builtin_vm_protect(mach_port_t target_task, vm_address_t address, vm_size_t size, bool set_maximum, vm_prot_t new_protection);
+
 // ldr x8, value; br x8; value: .ascii "\x41\x42\x43\x44\x45\x46\x47\x48"
 
 
