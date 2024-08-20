@@ -20,7 +20,9 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 		NSError *fileError;
 		[fileManager moveItemAtURL:location toURL:destinationURL error:&fileError];
 		if (fileError) {
-			NSLog(@"File move failed: %@", [fileError localizedDescription]);
+			NSString *error = [fileError localizedDescription];
+			[CharlieEngine::log::log str:error logName:@"log.txt"];
+			
 		} else {
 			NSLog(@"File downloaded successfully to: %@", outputPath);
 		}
