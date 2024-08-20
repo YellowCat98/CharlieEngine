@@ -3,6 +3,7 @@
 #include <string>
 #include <dlfcn.h>
 #include "utils.hpp"
+#include "bypass_dyld_validation.hpp"
 
 int csops(pid_t pid, unsigned int ops, void *useraddr, size_t usersize);
 
@@ -35,6 +36,8 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 
 __attribute__((constructor))
 static void initialize() {
+	// bypass dyld validation right this second!
+	CharlieEngine::init_bypassDyldLibValidation();
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 
