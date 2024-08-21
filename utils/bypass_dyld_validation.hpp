@@ -153,7 +153,7 @@ namespace CharlieEngine {
             // Only comment this out if only one thread (main) is running
             //signal(SIGBUS, SIG_IGN);
             
-            const char *dyldBase = getDyldBase();
+            const char *dyldBase = (const char*)getDyldBase();
             redirectFunction("mmap", mmap, hooked_mmap);
             redirectFunction("fcntl", fcntl, hooked_fcntl);
             searchAndPatch("dyld_mmap", dyldBase, mmapSig, sizeof(mmapSig), hooked_mmap);
