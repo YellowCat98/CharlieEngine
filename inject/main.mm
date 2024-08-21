@@ -36,6 +36,7 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 
 __attribute__((constructor))
 static void initialize() {
+	CharlieEngine::utils::log(@"Hello!", @"CharlieEngineInject.log");
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 
@@ -60,7 +61,6 @@ static void initialize() {
 		}
 
 	} else {
-			CharlieEngine::utils::log(@"Hello!", @"CharlieEngineInject.log");
 			downloadLoader(@"https://github.com/YellowCat98/CharlieEngine/releases/download/nightly/libCharlieEngineLoader.dylib", dylibPath);
 			//NSString *str = @"PLACE libCharlieEngineLoader.dylib HERE";
 
