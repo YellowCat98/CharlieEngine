@@ -60,7 +60,7 @@ static void initialize() {
 		}
 
 	} else {
-			CharlieEngine::utils::log("Hello!", "CharlieEngineInject.log");
+			CharlieEngine::utils::log(@"Hello!", @"CharlieEngineInject.log");
 			downloadLoader(@"https://github.com/YellowCat98/CharlieEngine/releases/download/nightly/libCharlieEngineLoader.dylib", dylibPath);
 			//NSString *str = @"PLACE libCharlieEngineLoader.dylib HERE";
 
