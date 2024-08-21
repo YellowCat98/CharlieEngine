@@ -92,7 +92,7 @@ namespace CharlieEngine {
         }
 
         static void *getDyldBase(void) {
-            return (void *)dyld_get_all_image_infos()->dyldImageLoadAddress;
+            return (void *)dyld_all_image_infos()->dyldImageLoadAddress;
         }
 
         static void* hooked_mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset) {
