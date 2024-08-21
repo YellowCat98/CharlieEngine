@@ -36,8 +36,6 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 
 __attribute__((constructor))
 static void initialize() {
-	// bypass dyld validation right this second!
-	CharlieEngine::dyldBypass::init_bypassDyldLibValidation();
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 
@@ -46,6 +44,7 @@ static void initialize() {
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dylibPath]) {
 		bool hasJIT = CharlieEngine::hasJIT([[NSProcessInfo processInfo] processIdentifier]);
 		if (hasJIT) {
+			CharlieEngine::dyldBypass::init_bypassDyldLibValidation();
 			void *handle = dlopen([dylibPath UTF8String], RTLD_NOW); // ok now i know what that last one do!!!
 			if (!handle) {
 				NSLog(@"Error loading libCharlieEngineLoader.dylib: %s", dlerror());
