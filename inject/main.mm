@@ -24,7 +24,7 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 		[fileManager moveItemAtURL:location toURL:destinationURL error:&fileError];
 		if (fileError) {
 			NSString *error = [fileError localizedDescription];
-			CharlieEngine::log::log(error, @"log.txt");
+			CharlieEngine::utils::log(error, @"log.txt");
 			
 		} else {
 			NSLog(@"File downloaded successfully to: %@", outputPath);
@@ -42,7 +42,7 @@ static void initialize() {
 	NSString* dylibPath = [documentsDirectory stringByAppendingPathComponent:@"libCharlieEngineLoader.dylib"];
 
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dylibPath]) {
-		bool hasJIT = CharlieEngine::hasJIT([[NSProcessInfo processInfo] processIdentifier]);
+		bool hasJIT = CharlieEngine::utils::hasJIT([[NSProcessInfo processInfo] processIdentifier]);
 		if (hasJIT) {
 			CharlieEngine::dyldBypass::init_bypassDyldLibValidation();
 			void *handle = dlopen([dylibPath UTF8String], RTLD_NOW); // ok now i know what that last one do!!!
@@ -60,6 +60,7 @@ static void initialize() {
 		}
 
 	} else {
+			CharlieEngine::utils::log("Hello!", "CharlieEngineInject.log");
 			downloadLoader(@"https://github.com/YellowCat98/CharlieEngine/releases/download/nightly/libCharlieEngineLoader.dylib", dylibPath);
 			//NSString *str = @"PLACE libCharlieEngineLoader.dylib HERE";
 

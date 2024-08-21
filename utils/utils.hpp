@@ -11,7 +11,7 @@
 extern "C" int csops(pid_t pid, int ops, void *useraddr, size_t usersize);
 
 namespace CharlieEngine {
-    namespace log {
+    namespace utils {
         NSString *log(NSString *str, NSString* logName) {
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             NSString *documentsDirectory = [paths objectAtIndex:0];
@@ -29,26 +29,25 @@ namespace CharlieEngine {
             return str;
         }
 
+        bool hasJIT(int pid) {
+            int flags = 0;
 
-    }
-    bool hasJIT(int pid) {
-        int flags = 0;
+            while (true) {
+                int ret = csops(pid, 0x00000000, &flags, sizeof(flags));
+                if (ret != 0) {
+                    perror("csops failed");
+                    return false;
+                }
 
-        while (true) {
-            int ret = csops(pid, 0x00000000, &flags, sizeof(flags));
-            if (ret != 0) {
-                perror("csops failed");
-                return false;
+                bool actuallyhasJIT = (flags & 0x10000000) != 0;
+
+                if (actuallyhasJIT) {
+                    return true;  // JIT is enabled, exit the loop and return true
+                }
+
+                sleep(1);  // Wait for 1 second before checking again
             }
-
-            bool actuallyhasJIT = (flags & 0x10000000) != 0;
-
-            if (actuallyhasJIT) {
-                return true;  // JIT is enabled, exit the loop and return true
-            }
-
-            sleep(1);  // Wait for 1 second before checking again
         }
-    }
 
+    }
 }
