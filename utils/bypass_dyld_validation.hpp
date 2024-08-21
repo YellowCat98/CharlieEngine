@@ -37,7 +37,7 @@ namespace CharlieEngine {
         static unsigned char fcntlSig[] = {0x90, 0x0B, 0x80, 0xD2, 0x01, 0x10, 0x00, 0xD4};
 
         // Since we're patching libsystem_kernel, we must avoid calling to its functions
-        static void builtin_memcpy(char *target, char *source, size_t size) {
+        static void builtin_memcpy(char *target, const unsigned char *source, size_t size) {
             for (int i = 0; i < size; i++) {
                 target[i] = source[i];
             }
@@ -77,7 +77,7 @@ namespace CharlieEngine {
             
             for(int i=0; i < 0x100000; i++) {
                 if (base[i] == signature[0] && memcmp(base+i, signature, length) == 0) {
-                    patchAddr = base + i;
+                    patchAddr = (char*)(base + i);
                     break;
                 }
             }
@@ -154,10 +154,10 @@ namespace CharlieEngine {
             //signal(SIGBUS, SIG_IGN);
             
             const char *dyldBase = (const char*)getDyldBase();
-            redirectFunction("mmap", mmap, hooked_mmap);
-            redirectFunction("fcntl", fcntl, hooked_fcntl);
-            searchAndPatch("dyld_mmap", dyldBase, mmapSig, sizeof(mmapSig), hooked_mmap);
-            searchAndPatch("dyld_fcntl", dyldBase, fcntlSig, sizeof(fcntlSig), hooked___fcntl);
+            redirectFunction("mmap", (void*)mmap, (void*)hooked_mmap);
+            redirectFunction("fcntl", (void*)fcntl, (void*)hooked_fcntl);
+            searchAndPatch("dyld_mmap", dyldBase, (const char*)mmapSig, sizeof(mmapSig), (const char*)hooked_mmap);
+            searchAndPatch("dyld_fcntl", dyldBase, (const char*)fcntlSig, sizeof(fcntlSig), (const char*)hooked___fcntl);
         }
     }
 }
