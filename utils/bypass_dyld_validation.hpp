@@ -1,6 +1,6 @@
-// taken from https://github.com/pengubow/geode-inject-ios/blob/c7b0ab92e813ca4f7ba12600ba04bb7028b22eee/dyld_bypass_validation.m
+// Taken from https://github.com/pengubow/geode-inject-ios/blob/c7b0ab92e813ca4f7ba12600ba04bb7028b22eee/dyld_bypass_validation.m
 // and modified a bit in order to get it compiling
-// because i quite literally couldnt figure it out without copying the whole code
+// because I quite literally couldn't figure it out without copying the whole code
 
 // Based on: https://blog.xpnsec.com/restoring-dyld-memory-loading
 // https://github.com/xpn/DyldDeNeuralyzer/blob/main/DyldDeNeuralyzer/DyldPatch/dyldpatch.m
@@ -19,15 +19,9 @@
 
 #define ASM(...) __asm__(#__VA_ARGS__)
 
-
 extern "C" void* __mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
 extern "C" int __fcntl(int fildes, int cmd, void* param);
 extern "C" kern_return_t builtin_vm_protect(mach_port_t target_task, vm_address_t address, vm_size_t size, bool set_maximum, vm_prot_t new_protection);
-
-// ldr x8, value; br x8; value: .ascii "\x41\x42\x43\x44\x45\x46\x47\x48"
-
-
-// Signatures to search for
 
 namespace CharlieEngine {
 	namespace dyldBypass {
@@ -36,14 +30,12 @@ namespace CharlieEngine {
 		static unsigned char mmapSig[] = {0xB0, 0x18, 0x80, 0xD2, 0x01, 0x10, 0x00, 0xD4};
 		static unsigned char fcntlSig[] = {0x90, 0x0B, 0x80, 0xD2, 0x01, 0x10, 0x00, 0xD4};
 
-		// Since we're patching libsystem_kernel, we must avoid calling to its functions
 		static void builtin_memcpy(char *target, const unsigned char *source, size_t size) {
 			for (int i = 0; i < size; i++) {
 				target[i] = source[i];
 			}
 		}
 
-		// Originated from _kernelrpc_mach_vm_protect_trap
 		ASM(
 		.global _builtin_vm_protect \n
 		_builtin_vm_protect:     \n
@@ -55,39 +47,39 @@ namespace CharlieEngine {
 		static bool redirectFunction(const char *name, void *patchAddr, void *target) {
 			kern_return_t kret = builtin_vm_protect(mach_task_self(), (vm_address_t)patchAddr, sizeof(patch), false, PROT_READ | PROT_WRITE | VM_PROT_COPY);
 			if (kret != KERN_SUCCESS) {
-				NSLog(@"[DyldLVBypass] vm_protect(RW) fails at line %d", __LINE__);
+				CharlieEngine::utils::log([NSString stringWithFormat:@"vm_protect(RW) fails at line %d\n", __LINE__], @"DyldLVBypass");
 				return FALSE;
 			}
-			
+
 			builtin_memcpy((char *)patchAddr, patch, sizeof(patch));
 			*(void **)((char*)patchAddr + 16) = target;
-			
+
 			kret = builtin_vm_protect(mach_task_self(), (vm_address_t)patchAddr, sizeof(patch), false, PROT_READ | PROT_EXEC);
 			if (kret != KERN_SUCCESS) {
-				NSLog(@"[DyldLVBypass] vm_protect(RX) fails at line %d", __LINE__);
+				CharlieEngine::utils::log([NSString stringWithFormat:@"vm_protect(RX) fails at line %d\n", __LINE__], @"DyldLVBypass");
 				return FALSE;
 			}
-			
-			NSLog(@"[DyldLVBypass] hook %s succeed!", name);
+
+			CharlieEngine::utils::log([NSString stringWithFormat:@"hook %s succeed!\n", name], @"DyldLVBypass");
 			return TRUE;
 		}
 
 		static bool searchAndPatch(const char *name, const char *base, const char *signature, int length, void *target) {
 			char *patchAddr = NULL;
-			
-			for(int i=0; i < 0x100000; i++) {
-				if (base[i] == signature[0] && memcmp(base+i, signature, length) == 0) {
+
+			for(int i = 0; i < 0x100000; i++) {
+				if (base[i] == signature[0] && memcmp(base + i, signature, length) == 0) {
 					patchAddr = (char*)(base + i);
 					break;
 				}
 			}
-			
+
 			if (patchAddr == NULL) {
-				NSLog(@"[DyldLVBypass] hook fails line %d", __LINE__);
+				CharlieEngine::utils::log([NSString stringWithFormat:@"hook fails line %d\n", __LINE__], @"DyldLVBypass");
 				return FALSE;
 			}
-			
-			NSLog(@"[DyldLVBypass] found %s at %p", name, patchAddr);
+
+			CharlieEngine::utils::log([NSString stringWithFormat:@"found %s at %p\n", name, patchAddr], @"DyldLVBypass");
 			return redirectFunction(name, patchAddr, target);
 		}
 
@@ -111,26 +103,18 @@ namespace CharlieEngine {
 			if (cmd == F_ADDFILESIGS_RETURN) {
 				char filePath[PATH_MAX];
 				bzero(filePath, PATH_MAX);
-				
-				// Check if the file is our "in-memory" file
+
 				if (__fcntl(fildes, F_GETPATH, filePath) != -1) {
 					const char *homeDir = [NSHomeDirectory() UTF8String];
 					if (!strncmp(filePath, homeDir, strlen(homeDir))) {
 						fsignatures_t *fsig = (fsignatures_t*)param;
-						// called to check that cert covers file.. so we'll make it cover everything ;)
 						fsig->fs_file_start = 0xFFFFFFFF;
 						return 0;
 					}
 				}
-			}
-			
-			// Signature sanity check by dyld
-			else if (cmd == F_CHECK_LV) {
-				// Just say everything is fine
+			} else if (cmd == F_CHECK_LV) {
 				return 0;
 			}
-			
-			// If for another command or file, we pass through
 			return __fcntl(fildes, cmd, param);
 		}
 
@@ -147,12 +131,8 @@ namespace CharlieEngine {
 			if (bypassed) return;
 			bypassed = YES;
 
-			NSLog(@"[DyldLVBypass] init");
-			
-			// Modifying exec page during execution may cause SIGBUS, so ignore it now
-			// Only comment this out if only one thread (main) is running
-			//signal(SIGBUS, SIG_IGN);
-			
+			CharlieEngine::utils::log(@"init\n", @"DyldLVBypass");
+
 			const char *dyldBase = (const char*)getDyldBase();
 			redirectFunction("mmap", (void*)mmap, (void*)hooked_mmap);
 			redirectFunction("fcntl", (void*)fcntl, (void*)hooked_fcntl);
@@ -161,5 +141,3 @@ namespace CharlieEngine {
 		}
 	}
 }
-
-
