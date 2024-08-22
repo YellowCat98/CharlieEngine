@@ -57,6 +57,8 @@ static void initialize() {
 				if (!success) {
 					NSLog(@"Error writing Error.");
 				}
+			} else {
+				CharlieEngine::utils::log(@"libCharlieEngineLoader.dylib is successfully loaded!", @"CharlieEngineInject.log");
 			}
 		} else {
 			CharlieEngine::utils::log(@"JIT is not enabled!\n", @"CharlieEngineInject.log");
