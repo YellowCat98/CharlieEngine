@@ -47,7 +47,7 @@ namespace CharlieEngine {
 		static bool redirectFunction(const char *name, void *patchAddr, void *target) {
 			kern_return_t kret = builtin_vm_protect(mach_task_self(), (vm_address_t)patchAddr, sizeof(patch), false, PROT_READ | PROT_WRITE | VM_PROT_COPY);
 			if (kret != KERN_SUCCESS) {
-				CharlieEngine::utils::log([NSString stringWithFormat:@"vm_protect(RW) fails at line %d\n", __LINE__], @"DyldLVBypass");
+				CharlieEngine::utils::log([NSString stringWithFormat:@"vm_protect(RW) fails at line %d\n", __LINE__], @"DyldLVBypass.log");
 				return FALSE;
 			}
 
@@ -56,11 +56,11 @@ namespace CharlieEngine {
 
 			kret = builtin_vm_protect(mach_task_self(), (vm_address_t)patchAddr, sizeof(patch), false, PROT_READ | PROT_EXEC);
 			if (kret != KERN_SUCCESS) {
-				CharlieEngine::utils::log([NSString stringWithFormat:@"vm_protect(RX) fails at line %d\n", __LINE__], @"DyldLVBypass");
+				CharlieEngine::utils::log([NSString stringWithFormat:@"vm_protect(RX) fails at line %d\n", __LINE__], @"DyldLVBypass.log");
 				return FALSE;
 			}
 
-			CharlieEngine::utils::log([NSString stringWithFormat:@"hook %s succeed!\n", name], @"DyldLVBypass");
+			CharlieEngine::utils::log([NSString stringWithFormat:@"hook %s succeed!\n", name], @"DyldLVBypass.log");
 			return TRUE;
 		}
 
@@ -75,11 +75,11 @@ namespace CharlieEngine {
 			}
 
 			if (patchAddr == NULL) {
-				CharlieEngine::utils::log([NSString stringWithFormat:@"hook fails line %d\n", __LINE__], @"DyldLVBypass");
+				CharlieEngine::utils::log([NSString stringWithFormat:@"hook fails line %d\n", __LINE__], @"DyldLVBypass.log");
 				return FALSE;
 			}
 
-			CharlieEngine::utils::log([NSString stringWithFormat:@"found %s at %p\n", name, patchAddr], @"DyldLVBypass");
+			CharlieEngine::utils::log([NSString stringWithFormat:@"found %s at %p\n", name, patchAddr], @"DyldLVBypass.log");
 			return redirectFunction(name, patchAddr, target);
 		}
 
@@ -131,7 +131,7 @@ namespace CharlieEngine {
 			if (bypassed) return;
 			bypassed = YES;
 
-			CharlieEngine::utils::log(@"init\n", @"DyldLVBypass");
+			CharlieEngine::utils::log(@"init\n", @"DyldLVBypass.log");
 
 			const char *dyldBase = (const char*)getDyldBase();
 			redirectFunction("mmap", (void*)mmap, (void*)hooked_mmap);
