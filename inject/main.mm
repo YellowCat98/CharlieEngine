@@ -27,7 +27,7 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 			NSString *error = [fileError localizedDescription];
 			CharlieEngine::utils::log([NSString stringWithFormat:@"Error: %@", error], @"CharlieEngineInject.log");
 		} else {
-			CharlieEngine::utils::log([NSString stringWithFormat:@"Downloaded libCharlieEngineLoader.dylib to: %@", outputPath], "CharlieEngineInject.log");
+			CharlieEngine::utils::log([NSString stringWithFormat:@"Downloaded libCharlieEngineLoader.dylib to: %@", outputPath], @"CharlieEngineInject.log");
 		}
 	}];
 
