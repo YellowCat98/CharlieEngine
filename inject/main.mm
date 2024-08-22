@@ -48,15 +48,7 @@ static void initialize() {
 			CharlieEngine::dyldBypass::init_bypassDyldLibValidation();
 			void *handle = dlopen([dylibPath UTF8String], RTLD_NOW); // ok now i know what that last one do!!!
 			if (!handle) {
-				NSLog(@"Error loading libCharlieEngineLoader.dylib: %s", dlerror());
-				NSString* errorPath = [documentsDirectory stringByAppendingPathComponent:@"last_err.txt"];
-				NSError* error;
-
-				NSString* errorString = [NSString stringWithFormat:@"Error loading libCharlieEngineLoader.dylib: %s", dlerror()];
-				BOOL success = [errorString writeToFile:errorPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-				if (!success) {
-					NSLog(@"Error writing Error.");
-				}
+				CharlieEngine::utils::log([NSString stringWithFormat:@"Error loading libCharlieEngineLoader.dylib: %s", dlerror()], @"CharlieEngineInject.log");
 			} else {
 				CharlieEngine::utils::log(@"libCharlieEngineLoader.dylib is successfully loaded!", @"CharlieEngineInject.log");
 			}
