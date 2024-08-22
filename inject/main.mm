@@ -13,7 +13,8 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 
 	NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
 		if (error) {
-			NSLog(@"Download failed: %@", [error localizedDescription]);
+
+			CharlieEngine::utils::log([NSString stringWithFormat:@"Download failed: %@", [error localizedDescription]], @"CharlieEngineInject.log");
 			return;
 		}
 
@@ -24,10 +25,9 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 		[fileManager moveItemAtURL:location toURL:destinationURL error:&fileError];
 		if (fileError) {
 			NSString *error = [fileError localizedDescription];
-			CharlieEngine::utils::log(error, @"log.txt");
-			
+			CharlieEngine::utils::log([NSString stringWithFormat:@"Error: %@", error], @"CharlieEngineInject.log");
 		} else {
-			NSLog(@"File downloaded successfully to: %@", outputPath);
+			CharlieEngine::utils::log([NSString stringWithFormat:@"Downloaded libCharlieEngineLoader.dylib to: %@", outputPath], "CharlieEngineInject.log");
 		}
 	}];
 
