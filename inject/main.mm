@@ -36,7 +36,7 @@ void downloadLoader(NSString* urlString, NSString* outputPath) {
 
 __attribute__((constructor))
 static void initialize() {
-	CharlieEngine::utils::log(@"Hello!", @"CharlieEngineInject.log");
+	CharlieEngine::utils::log(@"Hello!\n", @"CharlieEngineInject.log");
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];
 
@@ -58,6 +58,8 @@ static void initialize() {
 					NSLog(@"Error writing Error.");
 				}
 			}
+		} else {
+			CharlieEngine::utils::log(@"JIT is not enabled!\n", @"CharlieEngineInject.log");
 		}
 
 	} else {
