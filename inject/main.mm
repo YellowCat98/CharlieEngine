@@ -58,14 +58,5 @@ static void initialize() {
 
 	} else {
 			downloadLoader(@"https://github.com/YellowCat98/CharlieEngine/releases/download/nightly/libCharlieEngineLoader.dylib", dylibPath);
-			//NSString *str = @"PLACE libCharlieEngineLoader.dylib HERE";
-
-			//NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"PLACE libCharlieEngineLoader.dylib HERE"];
-
-			//NSError *error;
-			//BOOL success = [str writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:&error];
-			//if (!success) {
-			//	NSLog(@"Error writing file: %@", [error localizedDescription]);
-			//}
     }
 }
